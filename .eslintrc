@@ -1,0 +1,15 @@
+{
+  "extends": ["airbnb-typescript"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "ignorePatterns": ["webpack.config.js"],
+  "rules": {
+    "import/prefer-default-export": "off",
+    "no-param-reassign": ["error", { "props": false }],
+    "object-curly-newline": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off"
+  }
+}
