@@ -7,17 +7,17 @@ interface Market {
   },
 }
 
-export interface BinancePrice {
+export interface MarketPrice {
   markets: Market[],
 }
 
-const binancePrice = gql`
-  query BinancePrice($currencies: [String!]!) {
+const marketPrice = gql`
+  query MarketPrice($currencies: [String!]!) {
     markets(
       filter: {
         baseSymbol: { _in: $currencies }
         quoteSymbol: { _eq: "EUR" }
-        marketSymbol: { _like: "Binance:%" }
+        marketStatus: { _eq: Active }
       }
     ) {
       baseSymbol
@@ -28,4 +28,4 @@ const binancePrice = gql`
   }
 `;
 
-export default binancePrice;
+export default marketPrice;

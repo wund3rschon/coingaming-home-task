@@ -1,14 +1,15 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 
-import binancePrice, { BinancePrice } from 'src/queries/binancePrice';
+import marketPrice, { MarketPrice } from 'src/queries/marketPrice';
 import currenciesStorage from 'src/utils/currenciesStorage';
+import median from '../utils/median';
 
 const sentinel = {};
 
 const useCurrencies = () => {
   const [currencies, setCurrencies] = useState<PlainObject<number>>(sentinel);
-  const [getMarketPrice, { loading, data }] = useLazyQuery<BinancePrice>(binancePrice);
+  const [getMarketPrice, { loading, data }] = useLazyQuery<MarketPrice>(marketPrice);
 
   useEffect(
     () => {
@@ -27,12 +28,24 @@ const useCurrencies = () => {
   useEffect(
     () => {
       if (data != null && data.markets.length > 0) {
+        const pricesByCode = data.markets.reduce<PlainObject<number[]>>(
+          (acc, { baseSymbol, ticker: { lastPrice } }) => ({
+            ...acc,
+            [baseSymbol]: (
+              acc[baseSymbol] == null
+                ? [Number(lastPrice)]
+                : [...acc[baseSymbol]!, Number(lastPrice)]
+            ),
+          }),
+          {},
+        );
+
         setCurrencies({
           ...currencies,
-          ...data.markets.reduce(
-            (acc, { baseSymbol, ticker: { lastPrice } }) => ({
+          ...Object.entries(pricesByCode).reduce(
+            (acc, [code, prices]) => ({
               ...acc,
-              [baseSymbol]: Number(lastPrice),
+              [code]: median(prices),
             }),
             {},
           ),
