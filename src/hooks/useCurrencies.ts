@@ -40,16 +40,13 @@ const useCurrencies = () => {
           {},
         );
 
-        setCurrencies({
-          ...currencies,
+        setCurrencies((prevCurrencies) => ({
+          ...prevCurrencies,
           ...Object.entries(pricesByCode).reduce(
-            (acc, [code, prices]) => ({
-              ...acc,
-              [code]: median(prices),
-            }),
+            (acc, [code, prices]) => ({ ...acc, [code]: median(prices) }),
             {},
           ),
-        });
+        }));
       }
     },
     [data],
@@ -76,19 +73,11 @@ const useCurrencies = () => {
 
   const onRemove = (code: string) => {
     if (code in currencies) {
-      setCurrencies(
+      setCurrencies((prevCurrencies) => (
         Object
-          .entries(currencies)
-          .reduce(
-            (acc, [key, value]) => {
-              if (key === code) {
-                return acc;
-              }
-              return { ...acc, [key]: value };
-            },
-            {},
-          ),
-      );
+          .entries(prevCurrencies)
+          .reduce((acc, [key, value]) => (key === code ? acc : { ...acc, [key]: value }), {})
+      ));
     }
   };
 

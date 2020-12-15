@@ -63,7 +63,7 @@ const Currency: FC<Props> = ({ className, code, price, onRemove }) => {
   return (
     <li className={cx(className, 'currency', container)}>
       <div className={cx('currency__code', currencyCode)}>{code}</div>
-      <div className={cx('currency__price', currencyPrice)}>{price} €</div>
+      <div className={cx('currency__price', currencyPrice)}>{price.toFixed(3)} €</div>
       <svg className={cx('currency__remove', remover)} onClick={handleRemove} viewBox="0 0 24 24">
         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
       </svg>
